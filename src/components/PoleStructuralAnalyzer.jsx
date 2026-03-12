@@ -110,7 +110,7 @@ export function PoleStructuralAnalyzer() {
     return saved
       ? JSON.parse(saved)
       : {
-          poleType: "",
+          poleType: "custom",
           groundPosition: "",
           height: "",
         };
@@ -1082,7 +1082,7 @@ export function PoleStructuralAnalyzer() {
 
   // FUNCTION: Conditional form calculation input (custom or standard)
   const isCustomPoleMode =
-    condition.projectType !== "lightingPole" || method === "custom";
+    condition.projectType !== "null" || method === "custom";
 
   return (
     <div className="min-h-screen">
@@ -1198,7 +1198,8 @@ export function PoleStructuralAnalyzer() {
             </div>
 
             {/* Input Mode Selection (Only for Lighting Pole) */}
-            {condition.projectType === "lightingPole" && (
+            {condition.projectType === "lightingPole" &&
+              method === "standard" && (
               <div className="border-b border-gray-200 mx-6 pt-6 pb-6 hp:mx-4 hp:pt-4">
                 <div className="flex items-center justify-between mb-4 hp:mb-2">
                   <div>
@@ -1547,7 +1548,8 @@ export function PoleStructuralAnalyzer() {
         {/* ============================================================
           FORM ARM (Bagian input arm)
         ============================================================ */}
-        {isCustomPoleMode && (
+        {condition.projectType === "lightingPole" &&
+              method === "standard" && (
           <>
             <div
               className={`bg-gradient-to-r from-[#0d3b66] to-[#3399cc] p-4 flex items-center justify-between cursor-pointer mt-20 transition-all duration-500 ease-in-out ${

@@ -4,7 +4,7 @@ import { FileText, Settings, Circle, CheckCircle } from "lucide-react";
 export default function InputModeSelectionPole({ value, onChange }) {
   const options = [
     {
-      id: "standard",
+      id: "custom",
       title: "Standard Input",
       desc: "Predefined configurations for common pole types",
       icon: FileText,
