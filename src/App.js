@@ -6,13 +6,14 @@ import Login from "./pages/Login";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ScrollToTop from "./components/shared/ScroolTop";
+import Entry from "./pages/Entry";
 
 function App() {
   return (
     <>
       <ScrollToTop />
-      <Routes>
-        {/* Rute Publik: Login tidak pakai Layout */}
+      <Routes>  
+        <Route path="/entry" element={<Entry/>}/>
         <Route path="/login" element={<Login />} />
 
         {/* Rute Terproteksi: Harus login & pakai Layout */}
@@ -29,7 +30,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/entry" />} />
       </Routes>
     </>
   );

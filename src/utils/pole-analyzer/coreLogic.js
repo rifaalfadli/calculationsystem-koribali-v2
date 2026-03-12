@@ -3,14 +3,16 @@ import {
   structuralDesignResults,
   calculateDoResults,
   calculateOhwResults,
-  calculateAoResults,
   calculateArmResults,
 } from "./calculationResults";
+
+import { validatePole } from "./validation";
 
 // ===============================================================================
 // FUNCTION: Perform calculation for all form
 // ===============================================================================
 export const handleCalculateResults = (
+  method,
   handleIsConditionComplete,
   showToast,
   structuralDesign,
@@ -29,7 +31,6 @@ export const handleCalculateResults = (
   setResultsDo,
   setResultsOhw,
   setResultsArm,
-  setResultsAo,
   setShowResults,
 ) => {
   const errors = {
@@ -42,100 +43,131 @@ export const handleCalculateResults = (
     armObject: false,
   };
 
-  // VALIDATION: condition information
+  // =========================
+  // CONDITION VALIDATION
+  // =========================
   if (!handleIsConditionComplete()) {
     showToast("Please complete all Standard and Condition fields.");
     errors.condition = true;
   }
 
-  // VALIDATION: structural design information
+  // =========================
+  // STRUCTURAL DESIGN VALIDATION
+  // =========================
   if (!structuralDesignComplete()) {
     showToast("Please complete all Pole Specification fields.");
     errors.structuralDesign = true;
   }
 
-  // VALIDATION: each section/step pole
-  for (const section of sections || []) {
-    if (!handleIsSectionComplete(section)) {
-      showToast("Please complete all Pole Specification fields.");
-      errors.section = true;
-      break;
-    }
-  }
-
-  // VALIDATION: each direct object
-  for (let directObject of directObjects) {
-    if (!handleIsDoComplete(directObject)) {
-      showToast("Please complete all Direct Object fields.");
-      errors.directObject = true;
-      break;
-    }
-  }
-
-  // VALIDATION: each overhead wire
-  for (let overheadWire of overheadWires) {
-    if (!handleIsOhwComplete(overheadWire)) {
-      showToast("Please complete all Overhead Wire fields.");
-      errors.overheadWire = true;
-      break;
-    }
-  }
-
-  // VALIDATION: each arm
-  for (let arm of arms) {
-    if (!handleIsArmComplete(arm)) {
-      showToast("Please complete all Arm Specification fields.");
-      errors.arm = true;
-      break;
-    }
-  }
-
-  // VALIDATION: each arm object (nested)
-  for (const arm of arms || []) {
-    if (!arm) continue;
-
-    for (const armObject of arm.armObjects || []) {
-      if (!handleIsAoComplete(armObject)) {
-        showToast("Please complete all Arm Object fields.");
-        errors.armObject = true;
+  // =========================
+  // POLE VALIDATION (ONLY CUSTOM MODE)
+  // =========================
+  if (method !== "standard") {
+    for (const section of sections || []) {
+      if (!handleIsSectionComplete(section)) {
+        showToast("Please complete all Pole Specification fields.");
+        errors.section = true;
         break;
       }
     }
+  }
 
-    if (errors.armObject) break;
+  // POLE VALIDATION (custom error check)
+  const validatePoleError = validatePole(sections, structuralDesign);
+
+  if (validatePoleError) {
+    showToast(validatePoleError);
+    errors.section = true;
+    return { isValid: false, errors };
+  }
+
+  // =========================
+  // DIRECT OBJECT VALIDATION
+  // =========================
+  if (method !== "standard") {
+    for (const directObject of directObjects || []) {
+      if (!handleIsDoComplete(directObject)) {
+        showToast("Please complete all Direct Object fields.");
+        errors.directObject = true;
+        break;
+      }
+    }
+  }
+
+  // =========================
+  // OVERHEAD WIRE VALIDATION
+  // =========================
+  if (method !== "standard") {
+    for (const overheadWire of overheadWires || []) {
+      if (!handleIsOhwComplete(overheadWire)) {
+        showToast("Please complete all Overhead Wire fields.");
+        errors.overheadWire = true;
+        break;
+      }
+    }
+  }
+
+  // =========================
+  // ARM VALIDATION
+  // =========================
+  if (method !== "standard") {
+    for (const arm of arms || []) {
+      if (!handleIsArmComplete(arm)) {
+        showToast("Please complete all Arm Specification fields.");
+        errors.arm = true;
+        break;
+      }
+    }
+  }
+
+  // =========================
+  // ARM OBJECT VALIDATION
+  // =========================
+  if (method !== "standard") {
+    for (const arm of arms || []) {
+      if (!arm) continue;
+
+      for (const armObject of arm.armObjects || []) {
+        if (!handleIsAoComplete(armObject)) {
+          showToast("Please complete all Arm Object fields.");
+          errors.armObject = true;
+          break;
+        }
+      }
+
+      if (errors.armObject) break;
+    }
   }
 
   const isValid = Object.values(errors).every((v) => v === false);
 
-  // STOP kalau tidak valid
   if (!isValid) {
     return { isValid, errors };
   }
 
-  // FUNCTION: Calculate results for all pole sections
+  // =========================
+  // CALCULATION ENGINE
+  // =========================
   const calculatedResults = calculatePoleResults(sections);
   const calculatedResultsDo = calculateDoResults(directObjects);
   const calculatedStructuralDesign = structuralDesignResults(structuralDesign);
   const calculatedResultsOhw = calculateOhwResults(overheadWires);
   const calculatedResultsArm = calculateArmResults(arms);
-  const calculatedResultsAo = calculateAoResults(arms);
 
   setResults(calculatedResults);
   setResultStructuralDesign(calculatedStructuralDesign);
   setResultsDo(calculatedResultsDo);
   setResultsOhw(calculatedResultsOhw);
   setResultsArm(calculatedResultsArm);
-  setResultsAo(calculatedResultsAo);
   setShowResults(true);
 
-  // ALL CHECK PASSED
   return { isValid, errors };
 };
-
 // ===============================================================================
 // FUNCTION: Validate all inputs before generating the final report
 // ===============================================================================
 export const makeReport = (
+  method,
   results,
   showToast,
   handleIsCoverComplete,
@@ -188,54 +220,64 @@ export const makeReport = (
   }
 
   // CHECK 6: Sections/Steps
-  for (let section of sections) {
-    if (!handleIsSectionComplete(section)) {
-      showToast("Please complete all Pole Specification first.");
-      errors.section = true;
-      break;
+  if (method !== "standard") {
+    for (const section of sections || []) {
+      if (!handleIsSectionComplete(section)) {
+        showToast("Please complete all Pole Specification first.");
+        errors.section = true;
+        break;
+      }
     }
   }
 
   // CHECK 7: Direct Object
-  for (let directObject of directObjects) {
-    if (!handleIsDoComplete(directObject)) {
-      showToast("Please complete all Direct Object first.");
-      errors.directObject = true;
-      break;
+  if (method !== "standard") {
+    for (const directObject of directObjects || []) {
+      if (!handleIsDoComplete(directObject)) {
+        showToast("Please complete all Direct Object first.");
+        errors.directObject = true;
+        break;
+      }
     }
   }
 
   // CHECK 8: Overhead Wire
-  for (let overheadWire of overheadWires) {
-    if (!handleIsOhwComplete(overheadWire)) {
-      showToast("Please complete all Overhead Wire first.");
-      errors.overheadWire = true;
-      break;
+  if (method !== "standard") {
+    for (const overheadWire of overheadWires) {
+      if (!handleIsOhwComplete(overheadWire)) {
+        showToast("Please complete all Overhead Wire first.");
+        errors.overheadWire = true;
+        break;
+      }
     }
   }
 
   // CHECK 9: Arms
-  for (let arm of arms) {
-    if (!handleIsArmComplete(arm)) {
-      showToast("Please complete all Arm Specification first.");
-      errors.arm = true;
-      break;
+  if (method !== "standard") {
+    for (const arm of arms || []) {
+      if (!handleIsArmComplete(arm)) {
+        showToast("Please complete all Arm Specification first.");
+        errors.arm = true;
+        break;
+      }
     }
   }
 
   // CHECK 10: Arm Object
-  for (const arm of arms || []) {
-    if (!arm) continue;
+  if (method !== "standard") {
+    for (const arm of arms || []) {
+      if (!arm) continue;
 
-    for (const armObject of arm.armObjects || []) {
-      if (!handleIsAoComplete(armObject)) {
-        showToast("Please complete all Arm Object first.");
-        errors.armObject = true;
-        break;
+      for (const armObject of arm.armObjects || []) {
+        if (!handleIsAoComplete(armObject)) {
+          showToast("Please complete all Arm Object first.");
+          errors.armObject = true;
+          break;
+        }
       }
-    }
 
-    if (errors.armObject) break;
+      if (errors.armObject) break;
+    }
   }
   const isValid = Object.values(errors).every((v) => v === false);
 
@@ -251,7 +293,6 @@ export const deleteReport = (
   setResultsOhw,
   setResultStructuralDesign,
   setResultsArm,
-  setResultsAo,
   setShowResults,
   setCover,
   setCondition,
@@ -260,6 +301,8 @@ export const deleteReport = (
   setDirectObjects,
   setOverheadWires,
   setArms,
+  setMethod,
+  setPoleBasic,
   setActiveTab,
   setIsExpandedCondition,
   setIsExpandedPole,
@@ -271,14 +314,22 @@ export const deleteReport = (
   setIsExpandedOhw,
   setIsExpandedArm,
 ) => {
-  // Hapus hasil kalkulasi
+  // Reset Calculation Result
   setResults([]);
   setResultsDo([]);
   setResultsOhw([]);
   setResultStructuralDesign([]);
   setResultsArm([]);
-  setResultsAo([]);
   setShowResults(false);
+
+  // Reset Method and Standard Input
+  setMethod(null);
+
+  setPoleBasic({
+    poleType: "",
+    groundPosition: "",
+    height: "",
+  });
 
   // Reset Cover
   setCover({
@@ -356,5 +407,6 @@ export const deleteReport = (
   sessionStorage.removeItem("resultsDo");
   sessionStorage.removeItem("resultsOhw");
   sessionStorage.removeItem("resultsArm");
-  sessionStorage.removeItem("resultsAo");
+  sessionStorage.removeItem("method");
+  sessionStorage.removeItem("poleBasic");
 };

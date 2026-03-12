@@ -69,7 +69,7 @@ export const getConditionErrors = (condition) => ({
 // FUNCTION: Check if Structural Design Pole information form is complete
 export const structuralDesignComplete = (structuralDesign) => {
   return [structuralDesign.lowestStep, structuralDesign.overDesign].every(
-    (v) => v && v.trim() !== "",
+    (v) => !isEmpty(v),
   );
 };
 
@@ -82,6 +82,89 @@ export const getStructuralDesignErrors = (structuralDesign) => ({
 // ====================================================
 // Function for Pole Input
 // ====================================================
+// FUNCTION: Validate Pole Input
+export const validatePole = (sections, structuralDesign) => {
+  const lPole = Number(structuralDesign.lowestStep);
+
+  // Basic validation
+  if (!sections || sections.length === 0) {
+    return "No pole data available.";
+  }
+
+  // Loop each pole step
+  for (let i = 0; i < sections.length; i++) {
+    const poleNumber = i + 1;
+    const current = sections[i];
+    const previous = sections[i - 1];
+
+    // Extract & normalize values
+    const {
+      diameterLower,
+      diameterUpper,
+      thicknessLower,
+      thicknessUpper,
+      height,
+      poleType,
+    } = current;
+
+    const dLower = Number(diameterLower);
+    const dUpper = Number(diameterUpper);
+    const tLower = Number(thicknessLower);
+    const tUpper = Number(thicknessUpper);
+    const hCurrent = Number(height);
+
+    // ERROR 1 — Height pole tidak boleh 0 / kosong
+    if (!hCurrent || hCurrent <= 0) {
+      return `Pole ${poleNumber}: Height must be greater than 0. Please provide a valid height.`;
+    }
+
+    // ERROR 2 — Urutan height antar step terbalik
+    if (i > 0) {
+      const hPrevious = Number(previous.height);
+
+      if (hCurrent > hPrevious) {
+        return `Pole ${poleNumber}: Step height (${hCurrent}) must not be higher than the previous step (${hPrevious}). Please review the height order.`;
+      }
+    }
+
+    // ERROR 3 — Lowest step melewati tinggi pole terakhir (pole paling bawah)
+    if (i === sections.length - 1) {
+      if (lPole >= hCurrent) {
+        return `Pole ${poleNumber}: Lowest step (${lPole}) must be lower than the bottom step height (${hCurrent}). Please review your configuration.`;
+      }
+    }
+
+    // ERROR 4 — Diameter dalam satu pole (Taper)
+    if (poleType === "Taper") {
+      if (dUpper >= dLower) {
+        return `Pole ${poleNumber}: For taper type, the upper diameter (${dUpper}) must be smaller than the lower diameter (${dLower}). Please adjust the values.`;
+      }
+    }
+
+    // ERROR 5 — Diameter continuity antar pole
+    if (i > 0) {
+      const prevLower = Number(previous.diameterLower);
+
+      if (dUpper < prevLower) {
+        return `Pole ${poleNumber}: Upper diameter (${dUpper}) must be equal to or larger than the previous step’s lower diameter (${prevLower}). Please check the diameter continuity.`;
+      }
+    }
+
+    // ERROR 6 — Thickness pole melebihi radius pole
+    // For Lower
+    if (tLower > dLower / 2) {
+      return `Pole ${poleNumber}: Lower thickness (${tLower}) should not exceed half of the lower diameter (${dLower / 2}). Please adjust the thickness value.`;
+    }
+
+    // For Upper
+    if (tUpper > dUpper / 2) {
+      return `Pole ${poleNumber}: Upper thickness (${tUpper}) should not exceed half of the upper diameter (${dUpper / 2}). Please adjust the thickness value.`;
+    }
+  }
+
+  return null;
+};
+
 // FUNCTION: Check if a section/step pole is complete
 export const isSectionComplete = (section) => {
   if (
@@ -322,20 +405,28 @@ export const clearOhwError = (idOhw, updates, setOhwErrors) => {
 // ====================================================
 // FUNCTION: Check if a arm is complete
 export const isArmComplete = (arm) => {
-  if (
-    arm.nameArm.trim() === "" ||
-    arm.diameterArm.trim() === "" ||
-    arm.thicknessArm.trim() === "" ||
-    arm.lengthArm.trim() === "" ||
-    arm.expLengthArm.trim() === "" ||
-    arm.heightArm.trim() === "" ||
-    arm.materialArm.trim() === ""
-  ) {
-    return false;
-  }
+  const baseComplete =
+    arm.nameArm.trim() !== "" &&
+    arm.materialArm.trim() !== "" &&
+    arm.diameterArm.trim() !== "" &&
+    arm.thicknessArm.trim() !== "" &&
+    arm.lengthArm.trim() !== "" &&
+    arm.expLengthArm.trim() !== "" &&
+    arm.heightArm.trim() !== "" &&
+    arm.hDistanceArm.trim() !== "" &&
+    arm.fixAngleArm.trim() !== "" &&
+    arm.nncArm.trim() !== "" &&
+    arm.qtyArm.trim() !== "";
 
-  return true;
+  if (!baseComplete) return false;
+
+  const armObjects = Array.isArray(arm.armObjects) ? arm.armObjects : [];
+
+  if (armObjects.length === 0) return true;
+
+  return armObjects.every(isAoComplete);
 };
+
 // FUNCTION: Create an error checker helper for the arm
 export const getArmsErrors = (arms) => {
   const allErrors = {};
@@ -343,12 +434,16 @@ export const getArmsErrors = (arms) => {
   arms.forEach((arm) => {
     const e = {
       nameArm: isEmpty(arm.nameArm),
+      materialArm: isEmpty(arm.materialArm),
       diameterArm: isEmpty(arm.diameterArm),
       thicknessArm: isEmpty(arm.thicknessArm),
       lengthArm: isEmpty(arm.lengthArm),
       expLengthArm: isEmpty(arm.expLengthArm),
       heightArm: isEmpty(arm.heightArm),
-      materialArm: isEmpty(arm.materialArm),
+      hDistanceArm: isEmpty(arm.hDistanceArm),
+      fixAngleArm: isEmpty(arm.fixAngleArm),
+      nncArm: isEmpty(arm.nncArm),
+      qtyArm: isEmpty(arm.qtyArm),
     };
 
     if (Object.values(e).some(Boolean)) {

@@ -349,7 +349,7 @@ export function ArmObjectInput({
                     onChange={(e) =>
                       onUpdate(armObject.idAo, { typeOfAo: e.target.value })
                     }
-                    className={inputClass(aoError.typeOfAo)}
+                    className={`${inputClass(aoError.typeOfAo)} min-h-[38px]`}
                   >
                     <option value="omni">Omni</option>
                     <option value="directional">Directional</option>
@@ -437,7 +437,7 @@ export function ArmObjectInput({
                 {/* H-distance Arm Object Input */}
                 <div className="relative w-[140px] hp:w-full">
                   <label className="block text-sm text-gray-700 mb-2 hp:text-xs hp:mb-1">
-                    H-distance
+                    H-Distance
                   </label>
                   <div className="relative">
                     <input
@@ -517,7 +517,7 @@ export function ArmObjectInput({
                         onUpdate(armObject.idAo, { qtyAo: e.target.value })
                       }
                       onWheel={(e) => e.target.blur()}
-                      className={`${inputClass(aoError.qtyAo)} pr-8 hp:pr-8`}
+                      className={`${inputClass(aoError.qtyAo)} pr-6 hp:pr-6`}
                     />
                     <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-black-400">
                       pcs

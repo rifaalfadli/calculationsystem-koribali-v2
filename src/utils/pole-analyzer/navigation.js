@@ -40,3 +40,9 @@ export const goToNextArm = (arms, activeTabArm, setActiveTabArm) => {
     setActiveTabArm(arms[currentIndex + 1].idArm);
   }
 };
+
+// FUNCTIONS: Go to the next form input
+export const armNext = (setIsExpandedArm) => {
+  // Close arm
+  setIsExpandedArm(false);
+};

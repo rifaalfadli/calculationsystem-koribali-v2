@@ -23,7 +23,7 @@ export function PoleInput({ section, onUpdate, errors }) {
       {/* Basic Information */}
       <div>
         <h3 className="text-[#0d3b66] mb-4 flex items-center gap-2 text-sm font-medium hp:text-xs hp:gap-1">
-          <div className="w-1 h-4 bg-[#3399cc] rounded-full hp:h-4"></div>
+          <div className="w-1 h-5 bg-[#3399cc] rounded-full hp:h-4"></div>
           Basic Information
         </h3>
 
@@ -52,7 +52,7 @@ export function PoleInput({ section, onUpdate, errors }) {
               <select
                 value={section.material}
                 onChange={(e) => onUpdate({ material: e.target.value })}
-                className={inputClass(errors.material)}
+                className={`${inputClass(errors.material)} min-h-[42px]`}
               >
                 <option value="STK400">STK400</option>
                 <option value="STK490">STK490</option>
@@ -71,7 +71,7 @@ export function PoleInput({ section, onUpdate, errors }) {
               <select
                 value={section.poleType}
                 onChange={(e) => onUpdate({ poleType: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#3399cc] focus:border-[#3399cc] outline-none transition-all bg-white hp:p-2 hp:ounded-md hp:text-xs"
+                className="w-full min-h-[42px] px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#3399cc] focus:border-[#3399cc] outline-none transition-all bg-white hp:p-2 hp:ounded-md hp:text-xs"
               >
                 <option value="Straight">Straight</option>
                 <option value="Taper">Taper</option>
@@ -102,7 +102,10 @@ export function PoleInput({ section, onUpdate, errors }) {
                     type="number"
                     value={section.diameterLower}
                     onChange={(e) =>
-                      onUpdate({ diameterLower: e.target.value })
+                      onUpdate({
+                        diameterLower: e.target.value,
+                        diameterUpper: e.target.value,
+                      })
                     }
                     onWheel={(e) => e.target.blur()}
                     className={inputClass(errors.diameterLower)}
@@ -124,7 +127,10 @@ export function PoleInput({ section, onUpdate, errors }) {
                     type="number"
                     value={section.thicknessLower}
                     onChange={(e) =>
-                      onUpdate({ thicknessLower: e.target.value })
+                      onUpdate({
+                        thicknessLower: e.target.value,
+                        thicknessUpper: e.target.value,
+                      })
                     }
                     onWheel={(e) => e.target.blur()}
                     className={inputClass(errors.thicknessLower)}

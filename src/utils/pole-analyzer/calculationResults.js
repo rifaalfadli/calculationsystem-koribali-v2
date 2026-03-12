@@ -202,34 +202,126 @@ export function calculateOhwResults(overheadWires) {
 // ==============================
 // ARM INPUT
 // ==============================
-export function calculateArmResults(arms) {
-  return arms.map((arm, index) => {
-    const nameArm = arm.nameArm || `アーム-${index + 1}`;
-    const materialArm = arm.materialArm;
+// export function calculateArmResults(arms) {
+//   return arms.map((arm, index) => {
+//     const nameArm = arm.nameArm || `アーム-${index + 1}`;
+//     const materialArm = arm.materialArm;
+//     const diameterArm = parseFloat(arm.diameterArm) || 0;
+//     const thicknessArm = parseFloat(arm.thicknessArm) || 0;
+//     const lengthArm = parseFloat(arm.lengthArm) || 0;
+//     const expLengthArm = parseFloat(arm.expLengthArm) || 0;
+//     const heightArm = parseFloat(arm.heightArm) || 0;
+//     const hDistanceArm = parseFloat(arm.hDistanceArm) || 0;
+//     const fixAngleArm = parseFloat(arm.fixAngleArm) || 0;
+//     const nncArm = parseFloat(arm.nncArm) || 0;
+//     const qtyArm = parseFloat(arm.qtyArm) || 1;
 
-    const diameterArm = parseFloat(arm.diameterArm) || 0;
-    const thicknessArm = parseFloat(arm.thicknessArm) || 0;
-    const lengthArm = parseFloat(arm.lengthArm) || 0;
-    const expLengthArm = parseFloat(arm.expLengthArm) || 0;
-    const heightArm = parseFloat(arm.heightArm) || 0;
+//     // dummy data
+//     const fb = 156;
+//     const stb = 235;
+//     const sts = 136;
+//     const stc = 235;
 
-    return {
-      armNum: `AO${index + 1}`,
-      nameArm,
-      materialArm,
-      diameterArm,
-      thicknessArm,
-      lengthArm,
-      expLengthArm,
-      heightArm,
-    };
-  });
-}
+//     const sectAreaArm = 100;
+//     const sectModulusArm = 100;
+//     const momentInertiaArm = 100;
+//     const ipArm = 100;
+//     const radiusGyrArm = 100;
+//     const massaMArm = 100;
+//     const massaArm = 100;
+//     const flMArm = 100;
+//     const flArm = 100;
+//     const frontAreaArm = 100;
+//     const sideAreaArm = 100;
+//     const frontAreaMMArm = 100;
+//     const sideAreaMMArm = 100;
+//     const wlaFrontArm = 100;
+//     const slArm = 100;
+
+//     return {
+//       armNum: `AO${index + 1}`,
+//       nameArm,
+//       materialArm,
+//       diameterArm,
+//       thicknessArm,
+//       lengthArm,
+//       expLengthArm,
+//       heightArm,
+//       hDistanceArm,
+//       fixAngleArm,
+//       nncArm,
+//       qtyArm,
+
+//       fb,
+//       stb,
+//       sts,
+//       stc,
+//       sectAreaArm,
+//       sectModulusArm,
+//       momentInertiaArm,
+//       ipArm,
+//       radiusGyrArm,
+//       massaMArm,
+//       massaArm,
+//       flMArm,
+//       flArm,
+//       frontAreaArm,
+//       sideAreaArm,
+//       frontAreaMMArm,
+//       sideAreaMMArm,
+//       wlaFrontArm,
+//       slArm,
+//     };
+//   });
+// }
 
 // ==============================
 // ARM OBJECT INPUT
 // ==============================
-export function calculateAoResults(armObjects) {
+// export function calculateAoResults(armObjects) {
+//   return armObjects.map((armObject, index) => {
+//     const nameAo = armObject.nameAo;
+//     const typeOfAo = armObject.typeOfAo;
+
+//     const frontAreaAo = parseFloat(armObject.frontAreaAo) || 0;
+//     const sideAreaAo = parseFloat(armObject.sideAreaAo) || 0;
+//     const weightAo = parseFloat(armObject.weightAo) || 0;
+//     const heightAo = parseFloat(armObject.heightAo) || 0;
+//     const fixAngleAo = parseFloat(armObject.fixAngleAo) || 0;
+//     const nncAo = parseFloat(armObject.nncAo) || 0;
+//     const qtyAo = parseFloat(armObject.qtyAo) || 1;
+
+//     // dummy data
+//     const flAo = 100;
+//     const cfAo = 1;
+//     const wlafAo = 100;
+//     const wlasAo = 100;
+//     const slAo = 100;
+
+//     return {
+//       aoNum: `AO${index + 1}`,
+//       nameAo,
+//       typeOfAo,
+//       frontAreaAo,
+//       sideAreaAo,
+//       weightAo,
+//       heightAo,
+//       fixAngleAo,
+//       nncAo,
+//       qtyAo,
+//       flAo,
+//       cfAo,
+//       wlafAo,
+//       wlasAo,
+//       slAo,
+//     };
+//   });
+// }
+
+// ==============================
+// ARM OBJECT INPUT
+// ==============================
+export function calculateAoResults(armObjects = [], heightArm = 0) {
   return armObjects.map((armObject, index) => {
     const nameAo = armObject.nameAo;
     const typeOfAo = armObject.typeOfAo;
@@ -237,10 +329,11 @@ export function calculateAoResults(armObjects) {
     const frontAreaAo = parseFloat(armObject.frontAreaAo) || 0;
     const sideAreaAo = parseFloat(armObject.sideAreaAo) || 0;
     const weightAo = parseFloat(armObject.weightAo) || 0;
-    const heightAo = parseFloat(armObject.heightAo) || 0;
+    const hDistanceAo = parseFloat(armObject.heightAo) || 0;
     const fixAngleAo = parseFloat(armObject.fixAngleAo) || 0;
     const nncAo = parseFloat(armObject.nncAo) || 0;
     const qtyAo = parseFloat(armObject.qtyAo) || 1;
+    const heightAo = heightArm;
 
     // dummy data
     const flAo = 100;
@@ -248,6 +341,9 @@ export function calculateAoResults(armObjects) {
     const wlafAo = 100;
     const wlasAo = 100;
     const slAo = 100;
+    const mFixAo = 100;
+    const mWindAo = 100;
+    const mSeisAo = 100;
 
     return {
       aoNum: `AO${index + 1}`,
@@ -256,6 +352,7 @@ export function calculateAoResults(armObjects) {
       frontAreaAo,
       sideAreaAo,
       weightAo,
+      hDistanceAo,
       heightAo,
       fixAngleAo,
       nncAo,
@@ -265,6 +362,102 @@ export function calculateAoResults(armObjects) {
       wlafAo,
       wlasAo,
       slAo,
+      mFixAo,
+      mWindAo,
+      mSeisAo,
+    };
+  });
+}
+
+// ==============================
+// ARM INPUT
+// ==============================
+export function calculateArmResults(arms = []) {
+  return arms.map((arm, index) => {
+    const nameArm = arm.nameArm || `アーム-${index + 1}`;
+    const materialArm = arm.materialArm;
+    const diameterArm = parseFloat(arm.diameterArm) || 0;
+    const thicknessArm = parseFloat(arm.thicknessArm) || 0;
+    const lengthArm = parseFloat(arm.lengthArm) || 0;
+    const expLengthArm = parseFloat(arm.expLengthArm) || 0;
+    const heightArm = parseFloat(arm.heightArm) || 0;
+    const hDistanceArm = parseFloat(arm.hDistanceArm) || 0;
+    const fixAngleArm = parseFloat(arm.fixAngleArm) || 0;
+    const nncArm = parseFloat(arm.nncArm) || 0;
+    const qtyArm = parseFloat(arm.qtyArm) || 1;
+
+    // calculate nested armObjects
+    const calculatedArmObjects = calculateAoResults(
+      arm.armObjects || [],
+      heightArm,
+    );
+
+    // dummy data
+    const fb = 156;
+    const sfb = 235;
+    const sfs = 136;
+    const sfc = 235;
+
+    const sectAreaArm = 100;
+    const sectModulusArm = 100;
+    const momentInertiaArm = 100;
+    const ipArm = 100;
+    const radiusGyrArm = 100;
+    const massaMArm = 100;
+    const massaArm = 100;
+    const flMArm = 100;
+    const flArm = 100;
+    const frontAreaArm = 100;
+    const sideAreaArm = 100;
+    const frontAreaMMArm = 100;
+    const sideAreaMMArm = 100;
+    const wlaFrontArm = 100;
+    const slArm = 100;
+    const wlasArm = 0;
+    const mFixArm = 100;
+    const mWindArm = 100;
+    const mSeisArm = 100;
+
+    return {
+      armNum: `Arm${index + 1}`,
+      nameArm,
+      materialArm,
+      diameterArm,
+      thicknessArm,
+      lengthArm,
+      expLengthArm,
+      heightArm,
+      hDistanceArm,
+      fixAngleArm,
+      nncArm,
+      qtyArm,
+
+      fb,
+      sfb,
+      sfs,
+      sfc,
+      sectAreaArm,
+      sectModulusArm,
+      momentInertiaArm,
+      ipArm,
+      radiusGyrArm,
+      massaMArm,
+      massaArm,
+      flMArm,
+      flArm,
+      frontAreaArm,
+      sideAreaArm,
+      frontAreaMMArm,
+      sideAreaMMArm,
+      wlaFrontArm,
+      slArm,
+      wlasArm,
+      mFixArm,
+      mWindArm,
+      mSeisArm,
+
+      // arm object calculated
+      armObjects: calculatedArmObjects,
     };
   });
 }

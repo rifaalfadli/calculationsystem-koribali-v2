@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     // Jika tidak login, arahkan ke login
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/entry" replace />;
   }
 
   return children;

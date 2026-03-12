@@ -66,7 +66,7 @@ export function ConditionInput({ condition, onUpdate, onNext, errors }) {
               onChange={(e) =>
                 onUpdate({ designStandard: e.target.value, projectType: "" })
               }
-              className={inputClass(errors.designStandard)}
+              className={`${inputClass(errors.designStandard)} min-h-[42px]`}
             >
               <option value="" disabled>
                 Select Design Standard
@@ -110,7 +110,7 @@ export function ConditionInput({ condition, onUpdate, onNext, errors }) {
             <select
               value={condition.projectType}
               onChange={(e) => onUpdate({ projectType: e.target.value })}
-              className={`${inputClass(errors.projectType)} disabled:opacity-60`}
+              className={`${inputClass(errors.projectType)} disabled:opacity-60 min-h-[42px]`}
               disabled={!condition.designStandard}
             >
               <option value="" disabled>

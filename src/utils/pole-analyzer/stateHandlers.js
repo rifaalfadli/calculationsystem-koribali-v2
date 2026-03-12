@@ -407,18 +407,50 @@ export const addArm = (arms, setArms, setActiveTabArm, armIdRef) => {
     {
       idArm: newId,
       nameArm: "",
+      materialArm: "STK400",
       diameterArm: "",
       thicknessArm: "",
       lengthArm: "",
       expLengthArm: "",
       heightArm: "",
-      materialArm: "STK400",
+      hDistanceArm: "",
+      fixAngleArm: "",
+      nncArm: "",
+      qtyArm: "1",
 
       armObjects: [],
     },
   ]);
 
   setActiveTabArm(newId); // set newly added arm as active
+};
+
+// FUNCTION: Copy Arm data to clipboard
+export const copyArm = (arm, setArmClipboard) => {
+  setArmClipboard({
+    nameArm: arm.nameArm,
+    materialArm: arm.materialArm,
+    diameterArm: arm.diameterArm,
+    thicknessArm: arm.thicknessArm,
+    lengthArm: arm.lengthArm,
+    expLengthArm: arm.expLengthArm,
+    heightArm: arm.heightArm,
+    hDistanceArm: arm.hDistanceArm,
+    fixAngleArm: arm.fixAngleArm,
+    nncArm: arm.nncArm,
+    qtyArm: arm.qtyArm,
+  });
+};
+
+// FUNCTION: Paste clipboard data into a specific Arm
+export const pasteArm = (idArm, setArms, armClipboard) => {
+  if (!armClipboard) return;
+
+  setArms((prev) =>
+    prev.map((armItem) =>
+      armItem.idArm === idArm ? { ...armItem, ...armClipboard } : armItem,
+    ),
+  );
 };
 
 // FUNCTION: Remove a arm by ID
@@ -456,12 +488,16 @@ export const resetCurrentArm = (setArms, arms, activeTabArm) => {
         ? {
             ...s,
             nameArm: "",
+            materialArm: "STK400",
             diameterArm: "",
             thicknessArm: "",
             lengthArm: "",
             expLengthArm: "",
             heightArm: "",
-            materialArm: "STK400",
+            hDistanceArm: "",
+            fixAngleArm: "",
+            nncArm: "",
+            qtyArm: "1",
           }
         : s,
     ),

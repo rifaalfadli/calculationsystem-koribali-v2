@@ -3,7 +3,7 @@ import React from "react";
 export function ArmInput({ arm, onUpdate, armError }) {
   // Function to helper class input
   const inputClass = (hasError) =>
-    `w-full px-4 py-2.5 rounded-lg outline-none transition-all border text-sm pr-14
+    `w-full px-4 py-2.5 rounded-lg outline-none transition-all border text-sm
   ${
     hasError
       ? "border border-red-500 bg-[#fff5f5] ring-1 ring-red-200 focus:border-red-500 focus:ring-1 focus:ring-red-200"
@@ -23,10 +23,10 @@ export function ArmInput({ arm, onUpdate, armError }) {
       <div
         className="
           grid
-          grid-cols-8
+          grid-cols-12
           gap-2
 
-          xl:grid-cols-8
+          xl:grid-cols-12
           lg:grid-cols-4
           md:grid-cols-3
           sm:grid-cols-2
@@ -46,6 +46,29 @@ export function ArmInput({ arm, onUpdate, armError }) {
             className={inputClass(armError.nameArm)}
           />
           <ErrorText show={armError.nameArm} text="Required field" />
+        </div>
+
+        {/* Material Arm Selector */}
+        <div className="relative w-full">
+          <label className="block text-sm text-gray-700 mb-2 hp:text-xs hp:mb-1">
+            Material
+          </label>
+          <select
+            value={arm.materialArm}
+            onChange={(e) => onUpdate({ materialArm: e.target.value })}
+            className={`
+              ${inputClass(armError.materialArm)}
+              pr-4
+              h-[42px]
+            `}
+          >
+            <option value="STK400">STK400</option>
+            <option value="STK490">STK490</option>
+            <option value="STK500">STK500</option>
+            <option value="STK540">STK540</option>
+            <option value="STKR400">STKR400</option>
+          </select>
+          <ErrorText show={armError.materialArm} text="Required field" />
         </div>
 
         {/* Diameter Arm Input */}
@@ -168,27 +191,95 @@ export function ArmInput({ arm, onUpdate, armError }) {
           <ErrorText show={armError.heightArm} text="Required field" />
         </div>
 
-        {/* Material Arm Selector */}
+        {/* H-Distance Arm Input */}
         <div className="relative w-full">
           <label className="block text-sm text-gray-700 mb-2 hp:text-xs hp:mb-1">
-            Material
+            H-Distance
           </label>
-          <select
-            value={arm.materialArm}
-            onChange={(e) => onUpdate({ materialArm: e.target.value })}
-            className={`
-              ${inputClass(armError.materialArm)}
-              pr-4
-              h-[42px]
-            `}
-          >
-            <option value="STK400">STK400</option>
-            <option value="STK490">STK490</option>
-            <option value="STK500">STK500</option>
-            <option value="STK540">STK540</option>
-            <option value="STKR400">STKR400</option>
-          </select>
-          <ErrorText show={armError.materialArm} text="Required field" />
+          <div className="relative">
+            <input
+              type="number"
+              value={arm.hDistanceArm}
+              onChange={(e) =>
+                onUpdate({
+                  hDistanceArm: e.target.value,
+                })
+              }
+              onWheel={(e) => e.target.blur()}
+              className={`${inputClass(armError.hDistanceArm)} pr-7 hp:pr-7`}
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-black-400">
+              mm
+            </span>
+          </div>
+          <ErrorText show={armError.hDistanceArm} text="Required field" />
+        </div>
+
+        {/* Fix Angle Arm Input */}
+        <div className="relative w-full">
+          <label className="block text-sm text-gray-700 mb-2 hp:text-xs hp:mb-1">
+            Fix Angle
+          </label>
+          <div className="relative">
+            <input
+              type="number"
+              value={arm.fixAngleArm}
+              onChange={(e) =>
+                onUpdate({
+                  fixAngleArm: e.target.value,
+                })
+              }
+              onWheel={(e) => e.target.blur()}
+              className={`${inputClass(armError.fixAngleArm)} pr-7 hp:pr-7`}
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-black-400">
+              deg
+            </span>
+          </div>
+          <ErrorText show={armError.fixAngleArm} text="Required field" />
+        </div>
+
+        {/* nnC Arm Input */}
+        <div className="relative w-full">
+          <label className="block text-sm text-gray-700 mb-2 hp:text-xs hp:mb-1">
+            nnC
+          </label>
+          <input
+            type="number"
+            value={arm.nncArm}
+            onChange={(e) =>
+              onUpdate({
+                nncArm: e.target.value,
+              })
+            }
+            onWheel={(e) => e.target.blur()}
+            className={`${inputClass(armError.nncArm)}`}
+          />
+          <ErrorText show={armError.nncArm} text="Required field" />
+        </div>
+
+        {/* Quantity Arm Input */}
+        <div className="relative w-full">
+          <label className="block text-sm text-gray-700 mb-2 hp:text-xs hp:mb-1">
+            Quantity
+          </label>
+          <div className="relative">
+            <input
+              type="number"
+              value={arm.qtyArm}
+              onChange={(e) =>
+                onUpdate({
+                  qtyArm: e.target.value,
+                })
+              }
+              onWheel={(e) => e.target.blur()}
+              className={`${inputClass(armError.qtyArm)} pr-7 hp:pr-7`}
+            />
+            <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-black-400">
+              pcs
+            </span>
+          </div>
+          <ErrorText show={armError.qtyArm} text="Required field" />
         </div>
       </div>
     </div>

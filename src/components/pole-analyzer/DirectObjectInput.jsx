@@ -349,7 +349,7 @@ export function DirectObjectInput({
                     onChange={(e) =>
                       onUpdate(directObject.idDo, { typeOfDo: e.target.value })
                     }
-                    className={inputClass(doError.typeOfDo)}
+                    className={`${inputClass(doError.typeOfDo)} min-h-[38px]`}
                   >
                     <option value="omni">Omni</option>
                     <option value="directional">Directional</option>
